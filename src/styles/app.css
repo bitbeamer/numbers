@@ -25,7 +25,7 @@
 }
 
 :root[data-ui-scale='large'] {
-  --size-scale: 1.1;
+  --size-scale: 1.3;
 }
 
 body {
