@@ -22,6 +22,7 @@ describe('persistence utilities', () => {
     expect(state.activeProfileId).toBe('kid_default')
     expect(state.profiles.kid_default.name).toBeTruthy()
     expect(state.profiles.kid_default.settings.numberRange).toBe(25)
+    expect(state.profiles.kid_default.settings.language).toBe('de')
     expect(state.profiles.kid_default.modeStats.placevalue.played).toBe(0)
   })
 
@@ -89,6 +90,7 @@ describe('persistence utilities', () => {
 
     const loaded = loadState()
     expect(loaded.profiles[loaded.activeProfileId].settings.numberRange).toBe(25)
+    expect(loaded.profiles[loaded.activeProfileId].settings.language).toBe('de')
   })
 
   it('records task result including error pattern counters', () => {

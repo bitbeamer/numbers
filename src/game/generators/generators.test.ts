@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { generateCarryTask } from './carry'
 import { generateLove10Round } from './love10'
 import { generatePlaceValueTask } from './placevalue'
@@ -41,8 +41,18 @@ describe('game generators support number ranges', () => {
   it('creates place-value tasks with valid tens and ones', () => {
     const samples = Array.from({ length: 20 }).map(() => generatePlaceValueTask('hard', 100))
 
-    expect(samples.every((task) => task.value >= 0 && task.value <= 99)).toBe(true)
+    expect(samples.every((task) => task.value >= 0 && task.value <= 100)).toBe(true)
     expect(samples.every((task) => task.tens === Math.floor(task.value / 10))).toBe(true)
     expect(samples.every((task) => task.ones === task.value % 10)).toBe(true)
+  })
+
+  it('can generate the selected maximum value', () => {
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0)
+    const task = generatePlaceValueTask('medium', 25)
+    randomSpy.mockRestore()
+
+    expect(task.value).toBe(25)
+    expect(task.tens).toBe(2)
+    expect(task.ones).toBe(5)
   })
 })

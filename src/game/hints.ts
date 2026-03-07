@@ -1,17 +1,23 @@
-export const getCarryHints = (onesA: number, onesB: number): string[] => {
+import type { Language } from '../state/types'
+import { translate } from '../i18n/translations'
+
+export const getCarryHints = (onesA: number, onesB: number, language: Language): string[] => {
   const missingTo10 = Math.max(0, 10 - onesA)
   return [
-    `Wie viele fehlen von ${onesA} bis 10? Es fehlen ${missingTo10}.`,
-    `Markiere ${Math.min(onesB, missingTo10)} Einer aus der zweiten Zahl und bündle dann 10 Einer zu 1 Zehner.`,
+    translate(language, 'carryHint1', { onesA, missing: missingTo10 }),
+    translate(language, 'carryHint2', { count: Math.min(onesB, missingTo10) }),
   ]
 }
 
-export const errorLabelMap: Record<string, string> = {
-  sum_not_10: '10er-Freunde vertauscht',
-  carry_missed: 'Übertrag vergessen',
-  place_value_confusion: 'Stellenwert verwechselt',
-}
-
-export const labelForError = (errorKey: string): string => {
-  return errorLabelMap[errorKey] ?? errorKey
+export const labelForError = (errorKey: string, language: Language): string => {
+  if (errorKey === 'sum_not_10') {
+    return translate(language, 'errorSumNot10')
+  }
+  if (errorKey === 'carry_missed') {
+    return translate(language, 'errorCarryMissed')
+  }
+  if (errorKey === 'place_value_confusion') {
+    return translate(language, 'errorPlaceValue')
+  }
+  return translate(language, 'errorUnknown')
 }

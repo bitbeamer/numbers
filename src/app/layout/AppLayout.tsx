@@ -1,17 +1,18 @@
 import { useEffect } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { getAvatarOption } from '../avatarCatalog'
+import { useI18n } from '../../i18n/useI18n'
 import { useAppStore } from '../../state/store'
-
-const navItems = [
-  { to: '/', label: 'Start' },
-  { to: '/progress', label: 'Fortschritt' },
-  { to: '/settings', label: 'Einstellungen' },
-]
 
 export const AppLayout = () => {
   const { activeProfile } = useAppStore()
+  const { t } = useI18n()
   const avatar = getAvatarOption(activeProfile.avatar)
+  const navItems = [
+    { to: '/', label: t('navStart') },
+    { to: '/progress', label: t('navProgress') },
+    { to: '/settings', label: t('navSettings') },
+  ]
 
   useEffect(() => {
     document.documentElement.setAttribute('data-ui-scale', activeProfile.settings.uiScale)

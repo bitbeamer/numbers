@@ -3,6 +3,7 @@ export type Mode = 'love10' | 'carry' | 'sprint' | 'placevalue'
 export type DifficultySetting = 'easy' | 'medium' | 'adaptive'
 export type AdaptiveLevel = 'easy' | 'medium' | 'hard'
 export type NumberRange = 10 | 25 | 50 | 100
+export type Language = 'de' | 'en'
 
 export interface DailyStat {
   playSeconds: number
@@ -33,6 +34,7 @@ export interface Profile {
     difficulty: DifficultySetting
     uiScale: 'small' | 'normal' | 'large'
     numberRange: NumberRange
+    language: Language
   }
   stats: {
     totalSessions: number

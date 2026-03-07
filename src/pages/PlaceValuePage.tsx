@@ -4,10 +4,12 @@ import { PlaceValueBoard } from '../components/PlaceValueBoard'
 import { ScoreBar } from '../components/ScoreBar'
 import { generatePlaceValueTask } from '../game/generators/placevalue'
 import { nowMs } from '../game/time'
+import { useI18n } from '../i18n/useI18n'
 import { useAppStore } from '../state/store'
 
 export const PlaceValuePage = () => {
   const { activeProfile, adaptivePlan, registerSession, recordTaskResultInStore } = useAppStore()
+  const { t } = useI18n()
   const [task, setTask] = useState(() => generatePlaceValueTask(adaptivePlan.level, activeProfile.settings.numberRange))
   const [selectedTens, setSelectedTens] = useState<number | null>(null)
   const [selectedOnes, setSelectedOnes] = useState<number | null>(null)
@@ -49,14 +51,14 @@ export const PlaceValuePage = () => {
         setScore((current) => current + 10 + Math.max(0, next - 1) * 2)
         return next
       })
-      setFeedback({ kind: 'success', message: 'Richtig! Genau so viele Zehner und Einer.' })
+      setFeedback({ kind: 'success', message: t('placeValueCorrect') })
       recordTaskResultInStore({ mode: 'placevalue', correct: true, durationMs })
       roundTimeoutRef.current = window.setTimeout(() => nextTask(), 900)
       return
     }
 
     setStreak(0)
-    setFeedback({ kind: 'warning', message: 'Fast! Schau nochmal auf Zehner und Einer.' })
+    setFeedback({ kind: 'warning', message: t('placeValueRetry') })
     recordTaskResultInStore({
       mode: 'placevalue',
       correct: false,
@@ -87,28 +89,22 @@ export const PlaceValuePage = () => {
 
   return (
     <div className="stack-lg">
-      <h1>Zehner & Einer</h1>
-      <p>Klicke an, aus wie vielen Zehnern und Einern die Zahl besteht. Die Icons zeigen deine Auswahl.</p>
+      <h1>{t('placeValueTitle')}</h1>
+      <p>{t('placeValueSubtitle')}</p>
 
       <ScoreBar score={score} streak={streak} />
 
       <section className="task-card">
-        <p className="muted">Zahlraum bis {activeProfile.settings.numberRange}</p>
+        <p className="muted">{t('placeValueRange', { range: activeProfile.settings.numberRange })}</p>
         <div className="placevalue-number" aria-live="polite">
           {task.value}
         </div>
       </section>
 
-      <section className="task-card">
-        <h2>Deine Visualisierung</h2>
-        <p className="muted">So sieht deine aktuelle Auswahl als Zehner-Stäbe und Einer-Punkte aus.</p>
-        <PlaceValueBoard tens={selectedTens ?? 0} ones={selectedOnes ?? 0} />
-      </section>
-
       {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
 
       <section className="task-card">
-        <h2>Zehner wählen</h2>
+        <h2>{t('placeValueSelectTens')}</h2>
         <div className="choice-grid">
           {Array.from({ length: task.maxTensOption + 1 }).map((_, index) => (
             <button
@@ -124,7 +120,7 @@ export const PlaceValuePage = () => {
       </section>
 
       <section className="task-card">
-        <h2>Einer wählen</h2>
+        <h2>{t('placeValueSelectOnes')}</h2>
         <div className="choice-grid">
           {Array.from({ length: 10 }).map((_, index) => (
             <button
@@ -139,9 +135,15 @@ export const PlaceValuePage = () => {
         </div>
       </section>
 
+      <section className="task-card">
+        <h2>{t('placeValueVisualTitle')}</h2>
+        <p className="muted">{t('placeValueVisualText')}</p>
+        <PlaceValueBoard tens={selectedTens ?? 0} ones={selectedOnes ?? 0} />
+      </section>
+
       <div className="row-actions">
         <button type="button" className="secondary-button" onClick={nextTask}>
-          Neue Zahl
+          {t('placeValueNewNumber')}
         </button>
       </div>
     </div>

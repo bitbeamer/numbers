@@ -4,12 +4,14 @@ import { ScoreBar } from '../components/ScoreBar'
 import { generateSprintTask } from '../game/generators/sprint'
 import { calculateSprintPoints } from '../game/scoring'
 import { nowMs } from '../game/time'
+import { useI18n } from '../i18n/useI18n'
 import { useAppStore } from '../state/store'
 
 const ROUND_SECONDS = 60
 
 export const SprintPage = () => {
   const { activeProfile, adaptivePlan, recordTaskResultInStore, registerSession } = useAppStore()
+  const { t } = useI18n()
   const [running, setRunning] = useState(false)
   const [timeLeft, setTimeLeft] = useState(ROUND_SECONDS)
   const [task, setTask] = useState(() => generateSprintTask(adaptivePlan, activeProfile.settings.numberRange))
@@ -74,11 +76,11 @@ export const SprintPage = () => {
         setScore((prevScore) => prevScore + calculateSprintPoints(next))
         return next
       })
-      setFeedback({ kind: 'success', message: 'Treffer!' })
+      setFeedback({ kind: 'success', message: t('sprintHit') })
       recordTaskResultInStore({ mode: 'sprint', correct: true, durationMs })
     } else {
       setCombo(0)
-      setFeedback({ kind: 'warning', message: 'Knapp vorbei. Weiter!' })
+      setFeedback({ kind: 'warning', message: t('sprintMiss') })
       recordTaskResultInStore({
         mode: 'sprint',
         correct: false,
@@ -95,15 +97,15 @@ export const SprintPage = () => {
 
   return (
     <div className="stack-lg">
-      <h1>Tempo-Spiel</h1>
-      <p>60 Sekunden, große Antwortfelder und Combo-Punkte. Zahlraum bis {activeProfile.settings.numberRange}.</p>
+      <h1>{t('sprintTitle')}</h1>
+      <p>{t('sprintSubtitle', { range: activeProfile.settings.numberRange })}</p>
 
       {!running && timeLeft === ROUND_SECONDS ? (
         <section className="hero-card">
-          <h2>Bereit?</h2>
-          <p>Klicke auf Start und löse so viele Aufgaben wie möglich.</p>
+          <h2>{t('sprintReady')}</h2>
+          <p>{t('sprintReadyText')}</p>
           <button type="button" className="primary-button" onClick={startRound}>
-            Start
+            {t('sprintStart')}
           </button>
         </section>
       ) : null}
@@ -126,13 +128,10 @@ export const SprintPage = () => {
 
       {!running && timeLeft === 0 ? (
         <section className="hero-card">
-          <h2>Zeit vorbei!</h2>
-          <p>
-            Punkte: <strong>{score}</strong> | Aufgaben: <strong>{answered}</strong> | Trefferquote:{' '}
-            <strong>{accuracy}%</strong> | Beste Combo: <strong>{bestCombo}</strong>
-          </p>
+          <h2>{t('sprintTimeUp')}</h2>
+          <p>{t('sprintSummary', { score, answered, accuracy, bestCombo })}</p>
           <button type="button" className="primary-button" onClick={startRound}>
-            Nochmal spielen
+            {t('sprintReplay')}
           </button>
         </section>
       ) : null}

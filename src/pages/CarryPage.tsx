@@ -2,13 +2,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { FeedbackToast } from '../components/FeedbackToast'
 import { PlaceValueBoard } from '../components/PlaceValueBoard'
 import { ScoreBar } from '../components/ScoreBar'
-import { getCarryHints } from '../game/hints'
 import { generateCarryTask } from '../game/generators/carry'
+import { getCarryHints } from '../game/hints'
 import { nowMs } from '../game/time'
+import { useI18n } from '../i18n/useI18n'
 import { useAppStore } from '../state/store'
 
 export const CarryPage = () => {
   const { activeProfile, adaptivePlan, recordTaskResultInStore, registerSession } = useAppStore()
+  const { language, t } = useI18n()
   const [task, setTask] = useState(() => generateCarryTask(adaptivePlan, activeProfile.settings.numberRange))
   const [bundled, setBundled] = useState(false)
   const [hintStep, setHintStep] = useState(0)
@@ -40,7 +42,7 @@ export const CarryPage = () => {
   const shownTens = bundled ? baseTens + 1 : baseTens
   const highlightCount = hintStep >= 2 ? Math.min(onesB, Math.max(0, 10 - onesA)) : 0
 
-  const hints = useMemo(() => getCarryHints(onesA, onesB), [onesA, onesB])
+  const hints = useMemo(() => getCarryHints(onesA, onesB, language), [language, onesA, onesB])
 
   const nextTask = () => {
     setTask(generateCarryTask(adaptivePlan, activeProfile.settings.numberRange))
@@ -56,7 +58,7 @@ export const CarryPage = () => {
     }
 
     setBundled(true)
-    setFeedback({ kind: 'success', message: 'Klasse! 10 Einer wurden zu 1 Zehner.' })
+    setFeedback({ kind: 'success', message: t('carryBundleSuccess') })
   }
 
   const handleAnswer = (value: number) => {
@@ -64,7 +66,7 @@ export const CarryPage = () => {
 
     if (task.requiresCarry && !bundled) {
       setStreak(0)
-      setFeedback({ kind: 'warning', message: 'Schau auf die Einer: Bündle zuerst 10 Einer zu 1 Zehner.' })
+      setFeedback({ kind: 'warning', message: t('carryNeedBundle') })
       setHintStep((prev) => Math.max(prev, 1))
       recordTaskResultInStore({
         mode: 'carry',
@@ -81,14 +83,14 @@ export const CarryPage = () => {
         setScore((prevScore) => prevScore + 12 + next * 2)
         return next
       })
-      setFeedback({ kind: 'success', message: 'Richtig! Weiter geht\'s.' })
+      setFeedback({ kind: 'success', message: t('carryCorrect') })
       recordTaskResultInStore({ mode: 'carry', correct: true, durationMs })
       nextTimeoutRef.current = window.setTimeout(() => nextTask(), 900)
       return
     }
 
     setStreak(0)
-    setFeedback({ kind: 'info', message: 'Gute Idee. Prüfe Einer und Zehner nochmal.' })
+    setFeedback({ kind: 'info', message: t('carryRetry') })
     if (adaptivePlan.hintBoost) {
       setHintStep((prev) => Math.max(prev, 1))
     }
@@ -102,8 +104,8 @@ export const CarryPage = () => {
 
   return (
     <div className="stack-lg">
-      <h1>Übertrag-Werkstatt</h1>
-      <p>Bündle 10 Einer zu 1 Zehner und finde das Ergebnis. Zahlraum bis {activeProfile.settings.numberRange}.</p>
+      <h1>{t('carryTitle')}</h1>
+      <p>{t('carrySubtitle', { range: activeProfile.settings.numberRange })}</p>
 
       <ScoreBar score={score} streak={streak} />
 
@@ -111,13 +113,13 @@ export const CarryPage = () => {
         <h2>
           {task.a} + {task.b}
         </h2>
-        <p className="muted">Erst am Stellenwert-Modell denken, dann antworten.</p>
+        <p className="muted">{t('carryModelHint')}</p>
 
         <PlaceValueBoard tens={shownTens} ones={shownOnes} highlightCount={highlightCount} />
 
         <div className="row-actions">
           <button type="button" className="secondary-button" onClick={handleBundle} disabled={!canBundle}>
-            10 Einer bündeln
+            {t('carryBundle')}
           </button>
           <button
             type="button"
@@ -125,10 +127,10 @@ export const CarryPage = () => {
             onClick={() => setHintStep((prev) => Math.min(2, prev + 1))}
             disabled={hintStep >= 2}
           >
-            Hinweis
+            {t('carryHint')}
           </button>
           <button type="button" className="secondary-button" onClick={nextTask}>
-            Neue Aufgabe
+            {t('carryNewTask')}
           </button>
         </div>
 
@@ -138,7 +140,7 @@ export const CarryPage = () => {
       {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
 
       <section>
-        <h3>Wähle das Ergebnis</h3>
+        <h3>{t('carrySelectResult')}</h3>
         <div className="answer-grid">
           {task.options.map((option) => (
             <button key={option} type="button" className="answer-button" onClick={() => handleAnswer(option)}>
@@ -147,7 +149,6 @@ export const CarryPage = () => {
           ))}
         </div>
       </section>
-
     </div>
   )
 }

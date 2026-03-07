@@ -1,12 +1,21 @@
+import { AVATAR_OPTIONS } from '../app/avatarCatalog'
+import { useI18n } from '../i18n/useI18n'
 import { saveState } from '../state/persistence'
 import { useAppStore } from '../state/store'
-import type { DifficultySetting, NumberRange } from '../state/types'
-import { AVATAR_OPTIONS } from '../app/avatarCatalog'
+import type { DifficultySetting, Language, NumberRange } from '../state/types'
 
 const numberRanges: NumberRange[] = [10, 25, 50, 100]
 
+const avatarLabelKeyById: Record<string, 'avatarCat' | 'avatarFox' | 'avatarPanda' | 'avatarRocket'> = {
+  cat: 'avatarCat',
+  fox: 'avatarFox',
+  panda: 'avatarPanda',
+  rocket: 'avatarRocket',
+}
+
 export const SettingsPage = () => {
   const { activeProfile, state, patchProfile, resetData } = useAppStore()
+  const { t } = useI18n()
 
   const updateDifficulty = (difficulty: DifficultySetting) => {
     patchProfile({
@@ -44,6 +53,15 @@ export const SettingsPage = () => {
     })
   }
 
+  const updateLanguage = (language: Language) => {
+    patchProfile({
+      settings: {
+        ...activeProfile.settings,
+        language,
+      },
+    })
+  }
+
   const saveName = (rawValue: string) => {
     const trimmed = rawValue.trim()
     if (!trimmed) {
@@ -55,7 +73,7 @@ export const SettingsPage = () => {
   }
 
   const resetAll = () => {
-    const accepted = window.confirm('Willst du wirklich alle Daten löschen? Das kann nicht rückgängig gemacht werden.')
+    const accepted = window.confirm(t('settingsResetConfirm'))
     if (!accepted) {
       return
     }
@@ -68,12 +86,12 @@ export const SettingsPage = () => {
 
   return (
     <div className="stack-lg">
-      <h1>Einstellungen</h1>
+      <h1>{t('settingsTitle')}</h1>
 
       <section className="task-card">
-        <h2>Profil</h2>
+        <h2>{t('settingsProfile')}</h2>
         <div className="form-row">
-          <label htmlFor="profile-name">Name</label>
+          <label htmlFor="profile-name">{t('settingsName')}</label>
           <input
             id="profile-name"
             key={activeProfile.name}
@@ -84,26 +102,29 @@ export const SettingsPage = () => {
           />
         </div>
 
-        <div className="avatar-row" role="group" aria-label="Avatar auswählen">
-          {AVATAR_OPTIONS.map((avatar) => (
-            <button
-              key={avatar.id}
-              type="button"
-              className={`avatar-button ${activeProfile.avatar === avatar.id ? 'is-selected' : ''}`}
-              onClick={() => patchProfile({ avatar: avatar.id })}
-              aria-label={`Avatar ${avatar.label}`}
-            >
-              <img src={avatar.image} alt="" className="avatar-image" />
-              <span>{avatar.label}</span>
-            </button>
-          ))}
+        <div className="avatar-row" role="group" aria-label={t('settingsAvatarLabel')}>
+          {AVATAR_OPTIONS.map((avatar) => {
+            const labelKey = avatarLabelKeyById[avatar.id]
+            return (
+              <button
+                key={avatar.id}
+                type="button"
+                className={`avatar-button ${activeProfile.avatar === avatar.id ? 'is-selected' : ''}`}
+                onClick={() => patchProfile({ avatar: avatar.id })}
+                aria-label={`${t('settingsAvatarLabel')}: ${t(labelKey)}`}
+              >
+                <img src={avatar.image} alt="" className="avatar-image" />
+                <span>{t(labelKey)}</span>
+              </button>
+            )
+          })}
         </div>
       </section>
 
       <section className="task-card">
-        <h2>Spiel</h2>
+        <h2>{t('settingsGame')}</h2>
         <div className="form-row inline">
-          <label htmlFor="sound-toggle">Sound</label>
+          <label htmlFor="sound-toggle">{t('settingsSound')}</label>
           <input
             id="sound-toggle"
             type="checkbox"
@@ -113,35 +134,35 @@ export const SettingsPage = () => {
         </div>
 
         <div className="form-row">
-          <label htmlFor="difficulty-select">Schwierigkeit</label>
+          <label htmlFor="difficulty-select">{t('settingsDifficulty')}</label>
           <select
             id="difficulty-select"
             value={activeProfile.settings.difficulty}
             onChange={(event) => updateDifficulty(event.target.value as DifficultySetting)}
             className="text-input"
           >
-            <option value="easy">Leicht</option>
-            <option value="medium">Mittel</option>
-            <option value="adaptive">Adaptiv</option>
+            <option value="easy">{t('settingsDifficultyEasy')}</option>
+            <option value="medium">{t('settingsDifficultyMedium')}</option>
+            <option value="adaptive">{t('settingsDifficultyAdaptive')}</option>
           </select>
         </div>
 
         <div className="form-row">
-          <label htmlFor="ui-scale-select">UI-Größe</label>
+          <label htmlFor="ui-scale-select">{t('settingsUiScale')}</label>
           <select
             id="ui-scale-select"
             value={activeProfile.settings.uiScale}
             onChange={(event) => updateUiScale(event.target.value as 'small' | 'normal' | 'large')}
             className="text-input"
           >
-            <option value="small">Klein</option>
-            <option value="normal">Normal</option>
-            <option value="large">Groß</option>
+            <option value="small">{t('settingsUiScaleSmall')}</option>
+            <option value="normal">{t('settingsUiScaleNormal')}</option>
+            <option value="large">{t('settingsUiScaleLarge')}</option>
           </select>
         </div>
 
         <div className="form-row">
-          <label htmlFor="number-range-select">Zahlenraum</label>
+          <label htmlFor="number-range-select">{t('settingsNumberRange')}</label>
           <select
             id="number-range-select"
             value={activeProfile.settings.numberRange}
@@ -150,21 +171,34 @@ export const SettingsPage = () => {
           >
             {numberRanges.map((range) => (
               <option key={range} value={range}>
-                bis {range}
+                {t('settingsRangeOption', { value: range })}
               </option>
             ))}
+          </select>
+        </div>
+
+        <div className="form-row">
+          <label htmlFor="language-select">{t('settingsLanguage')}</label>
+          <select
+            id="language-select"
+            value={activeProfile.settings.language}
+            onChange={(event) => updateLanguage(event.target.value as Language)}
+            className="text-input"
+          >
+            <option value="de">{t('settingsLanguageGerman')}</option>
+            <option value="en">{t('settingsLanguageEnglish')}</option>
           </select>
         </div>
       </section>
 
       <section className="task-card">
-        <h2>Daten</h2>
+        <h2>{t('settingsData')}</h2>
         <div className="row-actions">
           <button type="button" className="secondary-button" onClick={persistNow}>
-            Jetzt sichern
+            {t('settingsSaveNow')}
           </button>
           <button type="button" className="danger-button" onClick={resetAll}>
-            Daten zurücksetzen
+            {t('settingsReset')}
           </button>
         </div>
       </section>

@@ -6,10 +6,12 @@ import { ScoreBar } from '../components/ScoreBar'
 import { generateLove10Round } from '../game/generators/love10'
 import { calculateLove10Points } from '../game/scoring'
 import { nowMs } from '../game/time'
+import { useI18n } from '../i18n/useI18n'
 import { useAppStore } from '../state/store'
 
 export const Love10Page = () => {
   const { activeProfile, adaptivePlan, recordTaskResultInStore, registerSession } = useAppStore()
+  const { t } = useI18n()
   const [round, setRound] = useState(() => generateLove10Round(adaptivePlan.level, activeProfile.settings.numberRange))
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [score, setScore] = useState(0)
@@ -64,7 +66,7 @@ export const Love10Page = () => {
         setScore((prevScore) => prevScore + calculateLove10Points(next))
         return next
       })
-      setFeedback({ kind: 'success', message: `Super! Zusammen ist das ${round.target}.` })
+      setFeedback({ kind: 'success', message: t('love10Success', { target: round.target }) })
       recordTaskResultInStore({ mode: 'love10', correct: true, durationMs })
       timeoutRef.current = window.setTimeout(() => {
         setFeedback(null)
@@ -74,7 +76,7 @@ export const Love10Page = () => {
     }
 
     setStreak(0)
-    setFeedback({ kind: 'warning', message: 'Fast! Versuch es nochmal mit zwei anderen Karten.' })
+    setFeedback({ kind: 'warning', message: t('love10Retry') })
     recordTaskResultInStore({
       mode: 'love10',
       correct: false,
@@ -114,12 +116,12 @@ export const Love10Page = () => {
 
   return (
     <div className="stack-lg">
-      <h1>Verliebte Zahlen</h1>
-      <p>Ziehe zwei Karten in die Herz-Zone. Zusammen sollen sie {round.target} ergeben.</p>
+      <h1>{t('love10Title')}</h1>
+      <p>{t('love10Subtitle', { target: round.target })}</p>
 
       <ScoreBar score={score} streak={streak} />
 
-      <DropZone title="Herz-Zone" subtitle="Lege hier genau 2 Karten ab." onDropCard={addCard}>
+      <DropZone title={t('love10DropTitle')} subtitle={t('love10DropSubtitle')} onDropCard={addCard}>
         <div className="selected-cards">
           {selectedIds.length > 0 ? (
             selectedIds.map((id) => {
@@ -135,7 +137,7 @@ export const Love10Page = () => {
               )
             })
           ) : (
-            <span className="muted">Ziehe zwei Karten hier hinein.</span>
+            <span className="muted">{t('love10DropHint')}</span>
           )}
         </div>
       </DropZone>
@@ -155,7 +157,7 @@ export const Love10Page = () => {
       </div>
 
       <button type="button" className="secondary-button" onClick={startNewRound}>
-        Neue Karten
+        {t('love10NewCards')}
       </button>
     </div>
   )

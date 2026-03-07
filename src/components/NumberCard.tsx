@@ -1,4 +1,5 @@
 import type { DragEvent } from 'react'
+import { useI18n } from '../i18n/useI18n'
 
 interface NumberCardProps {
   value: number
@@ -9,6 +10,8 @@ interface NumberCardProps {
 }
 
 export const NumberCard = ({ value, cardId, disabled = false, selected = false, onSelect }: NumberCardProps) => {
+  const { language } = useI18n()
+
   const handleDragStart = (event: DragEvent<HTMLButtonElement>) => {
     if (disabled) {
       return
@@ -25,7 +28,7 @@ export const NumberCard = ({ value, cardId, disabled = false, selected = false, 
       onDragStart={handleDragStart}
       onClick={() => onSelect?.(cardId)}
       disabled={disabled}
-      aria-label={`Zahlkarte ${value}`}
+      aria-label={language === 'de' ? `Zahlkarte ${value}` : `Number card ${value}`}
     >
       {value}
     </button>

@@ -22,6 +22,7 @@ export const createDefaultProfile = (name = 'Mia'): Profile => ({
     difficulty: 'adaptive',
     uiScale: 'normal',
     numberRange: 25,
+    language: 'de',
   },
   stats: {
     totalSessions: 0,
@@ -90,6 +91,7 @@ const normalizeProfile = (raw: unknown): Profile | null => {
     settingsRaw.numberRange === 100
       ? settingsRaw.numberRange
       : defaults.settings.numberRange
+  const language = settingsRaw.language === 'de' || settingsRaw.language === 'en' ? settingsRaw.language : defaults.settings.language
   const settings = {
     sound: typeof settingsRaw.sound === 'boolean' ? settingsRaw.sound : defaults.settings.sound,
     difficulty:
@@ -103,6 +105,7 @@ const normalizeProfile = (raw: unknown): Profile | null => {
         ? settingsRaw.uiScale
         : defaults.settings.uiScale,
     numberRange,
+    language,
   }
 
   const statsRaw = isObject(raw.stats) ? raw.stats : {}

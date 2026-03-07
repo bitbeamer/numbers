@@ -1,46 +1,60 @@
 import { Link } from 'react-router-dom'
-import { getAdaptiveSummary, getModeAccuracy, formatPercent } from '../state/selectors'
+import { useI18n } from '../i18n/useI18n'
+import { formatPercent, getAdaptiveSummary, getModeAccuracy } from '../state/selectors'
 import { useAppStore } from '../state/store'
-
-const modeCards = [
-  {
-    to: '/mode/love10',
-    title: 'Verliebte Zahlen',
-    text: 'Ziehe zwei Zahlkarten in die Herz-Zone und bilde 10.',
-    colorClass: 'mode-card--love10',
-  },
-  {
-    to: '/mode/placevalue',
-    title: 'Zehner & Einer',
-    text: 'Sieh eine Zahl und wähle die richtige Anzahl Zehner und Einer.',
-    colorClass: 'mode-card--placevalue',
-  },
-  {
-    to: '/mode/carry',
-    title: 'Übertrag-Werkstatt',
-    text: 'Bündle 10 Einer zu 1 Zehner und löse die Aufgabe.',
-    colorClass: 'mode-card--carry',
-  },
-  {
-    to: '/mode/sprint',
-    title: 'Tempo-Spiel (60s)',
-    text: 'Schnelle Aufgaben, große Antwortfelder und Combo-Punkte.',
-    colorClass: 'mode-card--sprint',
-  },
-]
 
 export const HomePage = () => {
   const { activeProfile } = useAppStore()
+  const { t } = useI18n()
   const adaptive = getAdaptiveSummary(activeProfile)
+  const difficultyLabel =
+    activeProfile.settings.difficulty === 'easy'
+      ? t('settingsDifficultyEasy')
+      : activeProfile.settings.difficulty === 'medium'
+        ? t('settingsDifficultyMedium')
+        : t('settingsDifficultyAdaptive')
+  const adaptiveLevelLabel =
+    adaptive.level === 'easy'
+      ? t('settingsDifficultyEasy')
+      : adaptive.level === 'medium'
+        ? t('settingsDifficultyMedium')
+        : t('difficultyHard')
+
+  const modeCards = [
+    {
+      to: '/mode/love10',
+      title: t('homeModeLove10Title'),
+      text: t('homeModeLove10Text'),
+      colorClass: 'mode-card--love10',
+    },
+    {
+      to: '/mode/placevalue',
+      title: t('homeModePlaceValueTitle'),
+      text: t('homeModePlaceValueText'),
+      colorClass: 'mode-card--placevalue',
+    },
+    {
+      to: '/mode/carry',
+      title: t('homeModeCarryTitle'),
+      text: t('homeModeCarryText'),
+      colorClass: 'mode-card--carry',
+    },
+    {
+      to: '/mode/sprint',
+      title: t('homeModeSprintTitle'),
+      text: t('homeModeSprintText'),
+      colorClass: 'mode-card--sprint',
+    },
+  ]
 
   return (
     <div className="stack-lg">
       <section className="hero-card">
-        <h1>Hallo {activeProfile.name}! Bereit für Zahlenliebe?</h1>
-        <p>Wähle einen Modus und starte direkt mit der Maus.</p>
+        <h1>{t('homeGreeting', { name: activeProfile.name })}</h1>
+        <p>{t('homeSubtitle')}</p>
       </section>
 
-      <section className="mode-grid" aria-label="Modi auswählen">
+      <section className="mode-grid" aria-label={t('homeModeSelectionLabel')}>
         {modeCards.map((mode) => (
           <Link key={mode.to} to={mode.to} className={`mode-card ${mode.colorClass}`}>
             <h2>{mode.title}</h2>
@@ -51,32 +65,42 @@ export const HomePage = () => {
 
       <section className="stats-row">
         <div className="mini-card">
-          <h3>Fortschritt pro Modus</h3>
+          <h3>{t('homeProgressTitle')}</h3>
           <div className="progress-lines">
             <p>
-              Gesamt: {formatPercent(activeProfile.stats.totalTasks ? activeProfile.stats.totalCorrect / activeProfile.stats.totalTasks : 0)}
+              {t('homeProgressTotal')}: {formatPercent(activeProfile.stats.totalTasks ? activeProfile.stats.totalCorrect / activeProfile.stats.totalTasks : 0)}
             </p>
-            <p>Love10: {formatPercent(getModeAccuracy(activeProfile, 'love10'))}</p>
-            <p>Carry: {formatPercent(getModeAccuracy(activeProfile, 'carry'))}</p>
-            <p>Zehner & Einer: {formatPercent(getModeAccuracy(activeProfile, 'placevalue'))}</p>
-            <p>Sprint: {formatPercent(getModeAccuracy(activeProfile, 'sprint'))}</p>
+            <p>
+              {t('homeProgressLove10')}: {formatPercent(getModeAccuracy(activeProfile, 'love10'))}
+            </p>
+            <p>
+              {t('homeProgressCarry')}: {formatPercent(getModeAccuracy(activeProfile, 'carry'))}
+            </p>
+            <p>
+              {t('homeProgressPlaceValue')}: {formatPercent(getModeAccuracy(activeProfile, 'placevalue'))}
+            </p>
+            <p>
+              {t('homeProgressSprint')}: {formatPercent(getModeAccuracy(activeProfile, 'sprint'))}
+            </p>
           </div>
         </div>
       </section>
 
       <section className="mini-card">
-        <h3>Einstellungen</h3>
+        <h3>{t('homeSettingsTitle')}</h3>
         <p>
-          Zahlenraum: <strong>bis {activeProfile.settings.numberRange}</strong>
+          {t('homeNumberRange')}: <strong>{t('settingsRangeOption', { value: activeProfile.settings.numberRange })}</strong>
         </p>
         {activeProfile.settings.difficulty === 'adaptive' ? (
           <p>
-            Level: <strong>{adaptive.level}</strong> | Genauigkeit letzte {adaptive.sampleSize} Aufgaben:{' '}
+            {t('homeAdaptiveLevel')}: <strong>{adaptiveLevelLabel}</strong> | {t('homeAdaptiveAccuracy', { count: adaptive.sampleSize })}:{' '}
             <strong>{formatPercent(adaptive.accuracy)}</strong>
-            {adaptive.needsCarryFocus ? ' | Fokus: mehr Übertrag-Aufgaben' : ''}
+            {adaptive.needsCarryFocus ? ` | ${t('homeAdaptiveFocus')}` : ''}
           </p>
         ) : (
-          <p>Fix eingestellt auf: {activeProfile.settings.difficulty}</p>
+          <p>
+            {t('homeFixedDifficulty')}: {difficultyLabel}
+          </p>
         )}
       </section>
     </div>
