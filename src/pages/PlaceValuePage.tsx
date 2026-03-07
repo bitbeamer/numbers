@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { FeedbackToast } from '../components/FeedbackToast'
+import { FireworksOverlay } from '../components/FireworksOverlay'
 import { PlaceValueBoard } from '../components/PlaceValueBoard'
 import { ScoreBar } from '../components/ScoreBar'
 import { generatePlaceValueTask } from '../game/generators/placevalue'
@@ -15,6 +16,7 @@ export const PlaceValuePage = () => {
   const [selectedOnes, setSelectedOnes] = useState<number | null>(null)
   const [score, setScore] = useState(0)
   const [streak, setStreak] = useState(0)
+  const [fireworksBurstKey, setFireworksBurstKey] = useState(0)
   const [feedback, setFeedback] = useState<{ kind: 'success' | 'warning'; message: string } | null>(null)
   const startedAtRef = useRef(0)
   const roundTimeoutRef = useRef<number | null>(null)
@@ -51,7 +53,8 @@ export const PlaceValuePage = () => {
         setScore((current) => current + 10 + Math.max(0, next - 1) * 2)
         return next
       })
-      setFeedback({ kind: 'success', message: t('placeValueCorrect') })
+      setFeedback(null)
+      setFireworksBurstKey((prev) => prev + 1)
       recordTaskResultInStore({ mode: 'placevalue', correct: true, durationMs })
       roundTimeoutRef.current = window.setTimeout(() => nextTask(), 900)
       return
@@ -89,6 +92,7 @@ export const PlaceValuePage = () => {
 
   return (
     <div className="stack-lg">
+      <FireworksOverlay burstKey={fireworksBurstKey} />
       <h1>{t('placeValueTitle')}</h1>
       <p>{t('placeValueSubtitle')}</p>
 

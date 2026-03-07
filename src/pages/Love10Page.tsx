@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { DropZone } from '../components/DropZone'
 import { FeedbackToast } from '../components/FeedbackToast'
+import { FireworksOverlay } from '../components/FireworksOverlay'
 import { NumberCard } from '../components/NumberCard'
 import { ScoreBar } from '../components/ScoreBar'
 import { generateLove10Round } from '../game/generators/love10'
@@ -16,6 +17,7 @@ export const Love10Page = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [score, setScore] = useState(0)
   const [streak, setStreak] = useState(0)
+  const [fireworksBurstKey, setFireworksBurstKey] = useState(0)
   const [feedback, setFeedback] = useState<{ kind: 'success' | 'warning'; message: string } | null>(null)
   const timeoutRef = useRef<number | null>(null)
   const lockedRef = useRef(false)
@@ -66,10 +68,10 @@ export const Love10Page = () => {
         setScore((prevScore) => prevScore + calculateLove10Points(next))
         return next
       })
-      setFeedback({ kind: 'success', message: t('love10Success', { target: round.target }) })
+      setFeedback(null)
+      setFireworksBurstKey((prev) => prev + 1)
       recordTaskResultInStore({ mode: 'love10', correct: true, durationMs })
       timeoutRef.current = window.setTimeout(() => {
-        setFeedback(null)
         startNewRound()
       }, 900)
       return
@@ -116,6 +118,7 @@ export const Love10Page = () => {
 
   return (
     <div className="stack-lg">
+      <FireworksOverlay burstKey={fireworksBurstKey} />
       <h1>{t('love10Title')}</h1>
       <p>{t('love10Subtitle', { target: round.target })}</p>
 

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FeedbackToast } from '../components/FeedbackToast'
+import { FireworksOverlay } from '../components/FireworksOverlay'
 import { PlaceValueBoard } from '../components/PlaceValueBoard'
 import { ScoreBar } from '../components/ScoreBar'
 import { generateCarryTask } from '../game/generators/carry'
@@ -16,6 +17,7 @@ export const CarryPage = () => {
   const [hintStep, setHintStep] = useState(0)
   const [score, setScore] = useState(0)
   const [streak, setStreak] = useState(0)
+  const [fireworksBurstKey, setFireworksBurstKey] = useState(0)
   const [feedback, setFeedback] = useState<{ kind: 'success' | 'warning' | 'info'; message: string } | null>(null)
   const nextTimeoutRef = useRef<number | null>(null)
   const taskStartedAtRef = useRef(0)
@@ -83,7 +85,8 @@ export const CarryPage = () => {
         setScore((prevScore) => prevScore + 12 + next * 2)
         return next
       })
-      setFeedback({ kind: 'success', message: t('carryCorrect') })
+      setFeedback(null)
+      setFireworksBurstKey((prev) => prev + 1)
       recordTaskResultInStore({ mode: 'carry', correct: true, durationMs })
       nextTimeoutRef.current = window.setTimeout(() => nextTask(), 900)
       return
@@ -104,6 +107,7 @@ export const CarryPage = () => {
 
   return (
     <div className="stack-lg">
+      <FireworksOverlay burstKey={fireworksBurstKey} />
       <h1>{t('carryTitle')}</h1>
       <p>{t('carrySubtitle', { range: activeProfile.settings.numberRange })}</p>
 

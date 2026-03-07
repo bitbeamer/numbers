@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { FeedbackToast } from '../components/FeedbackToast'
+import { FireworksOverlay } from '../components/FireworksOverlay'
 import { ScoreBar } from '../components/ScoreBar'
 import { generateSprintTask } from '../game/generators/sprint'
 import { calculateSprintPoints } from '../game/scoring'
@@ -21,6 +22,7 @@ export const SprintPage = () => {
   const [bestCombo, setBestCombo] = useState(0)
   const [answered, setAnswered] = useState(0)
   const [correct, setCorrect] = useState(0)
+  const [fireworksBurstKey, setFireworksBurstKey] = useState(0)
   const [feedback, setFeedback] = useState<{ kind: 'success' | 'warning'; message: string } | null>(null)
 
   useEffect(() => {
@@ -76,7 +78,8 @@ export const SprintPage = () => {
         setScore((prevScore) => prevScore + calculateSprintPoints(next))
         return next
       })
-      setFeedback({ kind: 'success', message: t('sprintHit') })
+      setFeedback(null)
+      setFireworksBurstKey((prev) => prev + 1)
       recordTaskResultInStore({ mode: 'sprint', correct: true, durationMs })
     } else {
       setCombo(0)
@@ -97,6 +100,7 @@ export const SprintPage = () => {
 
   return (
     <div className="stack-lg">
+      <FireworksOverlay burstKey={fireworksBurstKey} />
       <h1>{t('sprintTitle')}</h1>
       <p>{t('sprintSubtitle', { range: activeProfile.settings.numberRange })}</p>
 
