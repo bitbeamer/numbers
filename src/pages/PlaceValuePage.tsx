@@ -105,6 +105,8 @@ export const PlaceValuePage = () => {
         <PlaceValueBoard tens={selectedTens ?? 0} ones={selectedOnes ?? 0} />
       </section>
 
+      {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
+
       <section className="task-card">
         <h2>Zehner wählen</h2>
         <div className="choice-grid">
@@ -142,8 +144,6 @@ export const PlaceValuePage = () => {
           Neue Zahl
         </button>
       </div>
-
-      {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
     </div>
   )
 }

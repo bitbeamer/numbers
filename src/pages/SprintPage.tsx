@@ -113,6 +113,7 @@ export const SprintPage = () => {
       {running ? (
         <section className="task-card">
           <h2 className="sprint-question">{task.prompt}</h2>
+          {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
           <div className="answer-grid big">
             {task.options.map((option) => (
               <button key={option} type="button" className="answer-button big" onClick={() => handleAnswer(option)}>
@@ -120,7 +121,6 @@ export const SprintPage = () => {
               </button>
             ))}
           </div>
-          {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
         </section>
       ) : null}
 

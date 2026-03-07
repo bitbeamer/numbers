@@ -135,6 +135,8 @@ export const CarryPage = () => {
         {hintStep > 0 ? <div className="hint-box">{hints[hintStep - 1]}</div> : null}
       </section>
 
+      {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
+
       <section>
         <h3>Wähle das Ergebnis</h3>
         <div className="answer-grid">
@@ -146,7 +148,6 @@ export const CarryPage = () => {
         </div>
       </section>
 
-      {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
     </div>
   )
 }
