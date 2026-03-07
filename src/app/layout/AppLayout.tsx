@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
+import { getAvatarOption } from '../avatarCatalog'
 import { useAppStore } from '../../state/store'
 
 const navItems = [
@@ -10,6 +11,7 @@ const navItems = [
 
 export const AppLayout = () => {
   const { activeProfile } = useAppStore()
+  const avatar = getAvatarOption(activeProfile.avatar)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-ui-scale', activeProfile.settings.uiScale)
@@ -21,7 +23,10 @@ export const AppLayout = () => {
         <Link to="/" className="brand">
           Zahlenliebe
         </Link>
-        <p className="profile-chip">Profil: {activeProfile.name}</p>
+        <p className="profile-chip">
+          <img src={avatar.image} alt="" className="profile-avatar" />
+          {activeProfile.name}
+        </p>
       </header>
 
       <nav className="main-nav" aria-label="Hauptnavigation">

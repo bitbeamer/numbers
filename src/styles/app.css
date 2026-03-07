@@ -64,8 +64,19 @@ body {
   background: var(--panel);
   border: 2px solid var(--outline);
   border-radius: 999px;
-  padding: 0.4rem 0.9rem;
+  padding: 0.5rem 1rem;
   box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.profile-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 3px solid #c9ddeb;
+  background: #f4faff;
 }
 
 .main-nav {
@@ -169,6 +180,26 @@ p {
   transition: transform 120ms ease;
 }
 
+.mode-card--love10 {
+  background: #ffe7ef;
+  border-color: #f7bfd0;
+}
+
+.mode-card--placevalue {
+  background: #e8f8ff;
+  border-color: #b8e4f7;
+}
+
+.mode-card--carry {
+  background: #fff3dd;
+  border-color: #f3d8a7;
+}
+
+.mode-card--sprint {
+  background: #e9f6e8;
+  border-color: #bfe0bc;
+}
+
 .mode-card:hover {
   transform: translateY(-2px);
 }
@@ -190,6 +221,16 @@ p {
 .mini-card p {
   font-size: 1.25rem;
   font-weight: 800;
+}
+
+.progress-lines {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.progress-lines p {
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .score-bar {
@@ -506,10 +547,23 @@ p {
 }
 
 .avatar-button {
-  min-height: 48px;
-  padding: 0.55rem 0.85rem;
+  min-height: 96px;
+  min-width: 92px;
+  padding: 0.5rem 0.7rem;
   background: #f0f6ff;
   color: var(--ink);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.35rem;
+}
+
+.avatar-image {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 2px solid #c8dff1;
 }
 
 .avatar-button.is-selected {

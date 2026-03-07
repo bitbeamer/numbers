@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Comic Fuchs">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff1d2" />
+      <stop offset="1" stop-color="#ffe6f4" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bg)" stroke="#2c2c2c" stroke-width="4" />
+  <path d="M26 44 L42 16 L56 44 Z" fill="#ff8a3d" stroke="#2c2c2c" stroke-width="4" stroke-linejoin="round" />
+  <path d="M94 44 L78 16 L64 44 Z" fill="#ff8a3d" stroke="#2c2c2c" stroke-width="4" stroke-linejoin="round" />
+  <path d="M60 28 C78 28 95 43 95 60 C95 81 79 95 60 95 C41 95 25 81 25 60 C25 43 42 28 60 28 Z" fill="#ff9c4c" stroke="#2c2c2c" stroke-width="4" />
+  <path d="M35 71 C43 59 53 55 60 55 C67 55 77 59 85 71 C79 82 70 89 60 89 C50 89 41 82 35 71 Z" fill="#fff4de" stroke="#2c2c2c" stroke-width="4" />
+  <circle cx="47" cy="60" r="6" fill="#2c2c2c" />
+  <circle cx="73" cy="60" r="6" fill="#2c2c2c" />
+  <circle cx="60" cy="69" r="4" fill="#2c2c2c" />
+  <path d="M53 78 Q60 84 67 78" fill="none" stroke="#2c2c2c" stroke-width="4" stroke-linecap="round" />
+</svg>

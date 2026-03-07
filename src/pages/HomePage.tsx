@@ -7,21 +7,25 @@ const modeCards = [
     to: '/mode/love10',
     title: 'Verliebte Zahlen',
     text: 'Ziehe zwei Zahlkarten in die Herz-Zone und bilde 10.',
+    colorClass: 'mode-card--love10',
   },
   {
     to: '/mode/placevalue',
     title: 'Zehner & Einer',
     text: 'Sieh eine Zahl und wähle die richtige Anzahl Zehner und Einer.',
+    colorClass: 'mode-card--placevalue',
   },
   {
     to: '/mode/carry',
     title: 'Übertrag-Werkstatt',
     text: 'Bündle 10 Einer zu 1 Zehner und löse die Aufgabe.',
+    colorClass: 'mode-card--carry',
   },
   {
     to: '/mode/sprint',
     title: 'Tempo-Spiel (60s)',
     text: 'Schnelle Aufgaben, große Antwortfelder und Combo-Punkte.',
+    colorClass: 'mode-card--sprint',
   },
 ]
 
@@ -38,7 +42,7 @@ export const HomePage = () => {
 
       <section className="mode-grid" aria-label="Modi auswählen">
         {modeCards.map((mode) => (
-          <Link key={mode.to} to={mode.to} className="mode-card">
+          <Link key={mode.to} to={mode.to} className={`mode-card ${mode.colorClass}`}>
             <h2>{mode.title}</h2>
             <p>{mode.text}</p>
           </Link>
@@ -47,33 +51,24 @@ export const HomePage = () => {
 
       <section className="stats-row">
         <div className="mini-card">
-          <h3>Zahlenraum</h3>
-          <strong>bis {activeProfile.settings.numberRange}</strong>
-        </div>
-        <div className="mini-card">
-          <h3>Gesamttrefferquote</h3>
-          <strong>{formatPercent(activeProfile.stats.totalTasks ? activeProfile.stats.totalCorrect / activeProfile.stats.totalTasks : 0)}</strong>
-        </div>
-        <div className="mini-card">
-          <h3>Love10</h3>
-          <strong>{formatPercent(getModeAccuracy(activeProfile, 'love10'))}</strong>
-        </div>
-        <div className="mini-card">
-          <h3>Carry</h3>
-          <strong>{formatPercent(getModeAccuracy(activeProfile, 'carry'))}</strong>
-        </div>
-        <div className="mini-card">
-          <h3>Zehner & Einer</h3>
-          <strong>{formatPercent(getModeAccuracy(activeProfile, 'placevalue'))}</strong>
-        </div>
-        <div className="mini-card">
-          <h3>Sprint</h3>
-          <strong>{formatPercent(getModeAccuracy(activeProfile, 'sprint'))}</strong>
+          <h3>Fortschritt pro Modus</h3>
+          <div className="progress-lines">
+            <p>
+              Gesamt: {formatPercent(activeProfile.stats.totalTasks ? activeProfile.stats.totalCorrect / activeProfile.stats.totalTasks : 0)}
+            </p>
+            <p>Love10: {formatPercent(getModeAccuracy(activeProfile, 'love10'))}</p>
+            <p>Carry: {formatPercent(getModeAccuracy(activeProfile, 'carry'))}</p>
+            <p>Zehner & Einer: {formatPercent(getModeAccuracy(activeProfile, 'placevalue'))}</p>
+            <p>Sprint: {formatPercent(getModeAccuracy(activeProfile, 'sprint'))}</p>
+          </div>
         </div>
       </section>
 
       <section className="mini-card">
-        <h3>Adaptive Schwierigkeit</h3>
+        <h3>Einstellungen</h3>
+        <p>
+          Zahlenraum: <strong>bis {activeProfile.settings.numberRange}</strong>
+        </p>
         {activeProfile.settings.difficulty === 'adaptive' ? (
           <p>
             Level: <strong>{adaptive.level}</strong> | Genauigkeit letzte {adaptive.sampleSize} Aufgaben:{' '}

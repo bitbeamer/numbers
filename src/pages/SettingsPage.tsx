@@ -1,8 +1,8 @@
 import { saveState } from '../state/persistence'
 import { useAppStore } from '../state/store'
 import type { DifficultySetting, NumberRange } from '../state/types'
+import { AVATAR_OPTIONS } from '../app/avatarCatalog'
 
-const avatars = ['cat', 'fox', 'panda', 'rocket']
 const numberRanges: NumberRange[] = [10, 25, 50, 100]
 
 export const SettingsPage = () => {
@@ -85,14 +85,16 @@ export const SettingsPage = () => {
         </div>
 
         <div className="avatar-row" role="group" aria-label="Avatar auswählen">
-          {avatars.map((avatar) => (
+          {AVATAR_OPTIONS.map((avatar) => (
             <button
-              key={avatar}
+              key={avatar.id}
               type="button"
-              className={`avatar-button ${activeProfile.avatar === avatar ? 'is-selected' : ''}`}
-              onClick={() => patchProfile({ avatar })}
+              className={`avatar-button ${activeProfile.avatar === avatar.id ? 'is-selected' : ''}`}
+              onClick={() => patchProfile({ avatar: avatar.id })}
+              aria-label={`Avatar ${avatar.label}`}
             >
-              {avatar}
+              <img src={avatar.image} alt="" className="avatar-image" />
+              <span>{avatar.label}</span>
             </button>
           ))}
         </div>
