@@ -15,12 +15,14 @@ const mediumPlan: AdaptivePlan = {
 }
 
 describe('game generators support number ranges', () => {
-  it('creates love tasks with selected target', () => {
-    const round = generateLove10Round('easy', 25)
+  it('creates love tasks that always target 10 and ignore number range', () => {
+    const rounds = Array.from({ length: 30 }).map(() => generateLove10Round('easy', 25))
 
-    expect(round.target).toBe(25)
-    expect(round.solution[0] + round.solution[1]).toBe(25)
-    expect(round.cards.every((card) => card.value >= 0 && card.value <= 25)).toBe(true)
+    expect(rounds.every((round) => round.target === 10)).toBe(true)
+    expect(rounds.every((round) => round.shown >= 0 && round.shown <= 10)).toBe(true)
+    expect(rounds.every((round) => round.answer + round.shown === 10)).toBe(true)
+    expect(rounds.every((round) => round.options.includes(round.answer))).toBe(true)
+    expect(rounds.every((round) => round.options.every((option) => option >= 0 && option <= 10))).toBe(true)
   })
 
   it('creates carry tasks within selected range', () => {

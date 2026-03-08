@@ -32,11 +32,11 @@ const DEFAULT_COLORS = [
 const createPiece = (width: number, height: number): ConfettiPiece => {
   return {
     x: Math.random() * width,
-    y: -18 - Math.random() * height * 0.28,
+    y: Math.random() * height * 0.42,
     vx: -0.35 + Math.random() * 0.7,
-    vy: 0.4 + Math.random() * 0.7,
-    width: 6 + Math.random() * 5,
-    height: 10 + Math.random() * 8,
+    vy: 0.8 + Math.random() * 0.9,
+    width: 16 + Math.random() * 10,
+    height: 24 + Math.random() * 16,
     rotation: Math.random() * Math.PI * 2,
     rotationSpeed: -0.08 + Math.random() * 0.16,
     swayPhase: Math.random() * Math.PI * 2,
@@ -109,7 +109,7 @@ export const FireworksOverlay = ({ burstKey }: FireworksOverlayProps) => {
     const renderFrame = (now: number) => {
       const elapsed = now - startedAt
       const progress = Math.min(1, elapsed / durationMs)
-      const fade = progress < 0.18 ? progress / 0.18 : progress > 0.8 ? (1 - progress) / 0.2 : 1
+      const fade = progress > 0.84 ? (1 - progress) / 0.16 : 1
 
       context.clearRect(0, 0, window.innerWidth, window.innerHeight)
 
@@ -130,6 +130,7 @@ export const FireworksOverlay = ({ burstKey }: FireworksOverlayProps) => {
       }
     }
 
+    renderFrame(performance.now())
     rafId = window.requestAnimationFrame(renderFrame)
     window.addEventListener('resize', resize)
 

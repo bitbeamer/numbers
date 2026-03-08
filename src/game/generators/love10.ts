@@ -1,14 +1,11 @@
 import type { AdaptiveLevel, NumberRange } from '../../state/types'
 
-export interface Love10Card {
-  id: string
-  value: number
-}
-
 export interface Love10Round {
-  cards: Love10Card[]
+  shown: number
+  options: number[]
   target: number
-  solution: [number, number]
+  answer: number
+  missingOnLeft: boolean
 }
 
 const randomInt = (min: number, max: number) => {
@@ -24,35 +21,33 @@ const shuffle = <T,>(arr: T[]): T[] => {
   return next
 }
 
-const getCardCount = (level: AdaptiveLevel): number => {
+const getOptionCount = (level: AdaptiveLevel): number => {
   if (level === 'easy') {
-    return 5
+    return 4
   }
   if (level === 'hard') {
-    return 8
+    return 6
   }
-  return 6
+  return 5
 }
 
 export const generateLove10Round = (level: AdaptiveLevel, numberRange: NumberRange): Love10Round => {
-  const target = numberRange
-  const first = randomInt(level === 'easy' ? 1 : 0, level === 'easy' ? target - 1 : target)
-  const second = target - first
-  const values: number[] = [first, second]
-  const cardCount = getCardCount(level)
+  void numberRange
+  const target = 10
+  const shown = randomInt(0, target)
+  const answer = target - shown
+  const options = new Set<number>([answer])
+  const optionCount = getOptionCount(level)
 
-  while (values.length < cardCount) {
-    values.push(randomInt(0, target))
+  while (options.size < optionCount) {
+    options.add(randomInt(0, target))
   }
 
-  const cards = shuffle(values).map((value, idx) => ({
-    id: `love-card-${idx}-${value}-${Math.random().toString(36).slice(2, 8)}`,
-    value,
-  }))
-
   return {
-    cards,
+    shown,
+    options: shuffle(Array.from(options)),
     target,
-    solution: [first, second],
+    answer,
+    missingOnLeft: Math.random() < 0.5,
   }
 }

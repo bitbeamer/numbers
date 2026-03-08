@@ -13,7 +13,7 @@ const createDefaultModeStats = () => ({
   placevalue: { played: 0, correct: 0, avgMs: 0 },
 })
 
-export const createDefaultProfile = (name = 'Mia'): Profile => ({
+export const createDefaultProfile = (name = 'Kaya'): Profile => ({
   name,
   avatar: 'cat',
   createdAt: new Date().toISOString(),

@@ -1,8 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { DropZone } from '../components/DropZone'
+import { useEffect, useRef, useState } from 'react'
 import { FeedbackToast } from '../components/FeedbackToast'
 import { FireworksOverlay } from '../components/FireworksOverlay'
-import { NumberCard } from '../components/NumberCard'
 import { ScoreBar } from '../components/ScoreBar'
 import { generateLove10Round } from '../game/generators/love10'
 import { calculateLove10Points } from '../game/scoring'
@@ -14,9 +12,9 @@ export const Love10Page = () => {
   const { activeProfile, adaptivePlan, recordTaskResultInStore, registerSession } = useAppStore()
   const { t } = useI18n()
   const [round, setRound] = useState(() => generateLove10Round(adaptivePlan.level, activeProfile.settings.numberRange))
-  const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [score, setScore] = useState(0)
   const [streak, setStreak] = useState(0)
+  const [isCorrectFlash, setIsCorrectFlash] = useState(false)
   const [fireworksBurstKey, setFireworksBurstKey] = useState(0)
   const [feedback, setFeedback] = useState<{ kind: 'success' | 'warning'; message: string } | null>(null)
   const timeoutRef = useRef<number | null>(null)
@@ -36,39 +34,29 @@ export const Love10Page = () => {
     }
   }, [])
 
-  const cardsById = useMemo(() => {
-    return Object.fromEntries(round.cards.map((card) => [card.id, card]))
-  }, [round.cards])
-
   const startNewRound = () => {
     setRound(generateLove10Round(adaptivePlan.level, activeProfile.settings.numberRange))
-    setSelectedIds([])
+    setIsCorrectFlash(false)
     roundStartedAtRef.current = nowMs()
     lockedRef.current = false
   }
 
-  const evaluateCards = (ids: string[]) => {
-    if (lockedRef.current || ids.length !== 2) {
+  const handleAnswer = (value: number) => {
+    if (lockedRef.current) {
       return
     }
 
     lockedRef.current = true
-    const selected = ids.map((id) => cardsById[id]).filter(Boolean)
-    if (selected.length !== 2) {
-      lockedRef.current = false
-      return
-    }
-
-    const sum = selected[0].value + selected[1].value
     const durationMs = nowMs() - roundStartedAtRef.current
 
-    if (sum === round.target) {
+    if (value === round.answer) {
       setStreak((prev) => {
         const next = prev + 1
         setScore((prevScore) => prevScore + calculateLove10Points(next))
         return next
       })
       setFeedback(null)
+      setIsCorrectFlash(true)
       setFireworksBurstKey((prev) => prev + 1)
       recordTaskResultInStore({ mode: 'love10', correct: true, durationMs })
       timeoutRef.current = window.setTimeout(() => {
@@ -78,6 +66,7 @@ export const Love10Page = () => {
     }
 
     setStreak(0)
+    setIsCorrectFlash(false)
     setFeedback({ kind: 'warning', message: t('love10Retry') })
     recordTaskResultInStore({
       mode: 'love10',
@@ -86,76 +75,32 @@ export const Love10Page = () => {
       errorType: 'sum_not_10',
     })
     timeoutRef.current = window.setTimeout(() => {
-      setSelectedIds([])
       setFeedback(null)
       lockedRef.current = false
     }, 900)
-  }
-
-  const addCard = (cardId: string) => {
-    if (lockedRef.current) {
-      return
-    }
-
-    setSelectedIds((prev) => {
-      if (prev.includes(cardId) || prev.length >= 2) {
-        return prev
-      }
-      const next = [...prev, cardId]
-      if (next.length === 2) {
-        window.setTimeout(() => evaluateCards(next), 40)
-      }
-      return next
-    })
-  }
-
-  const removeCard = (cardId: string) => {
-    if (lockedRef.current) {
-      return
-    }
-    setSelectedIds((prev) => prev.filter((id) => id !== cardId))
   }
 
   return (
     <div className="stack-lg">
       <FireworksOverlay burstKey={fireworksBurstKey} />
       <h1>{t('love10Title')}</h1>
-      <p>{t('love10Subtitle', { target: round.target })}</p>
+      <p>{t('love10Subtitle')}</p>
 
       <ScoreBar score={score} streak={streak} />
 
-      <DropZone title={t('love10DropTitle')} subtitle={t('love10DropSubtitle')} onDropCard={addCard}>
-        <div className="selected-cards">
-          {selectedIds.length > 0 ? (
-            selectedIds.map((id) => {
-              const card = cardsById[id]
-              if (!card) {
-                return null
-              }
-
-              return (
-                <button key={id} type="button" className="chip-card" onClick={() => removeCard(id)}>
-                  {card.value}
-                </button>
-              )
-            })
-          ) : (
-            <span className="muted">{t('love10DropHint')}</span>
-          )}
-        </div>
-      </DropZone>
+      <section className={`task-card ${isCorrectFlash ? 'is-correct' : ''}`}>
+        <h2 className="sprint-question">
+          {round.missingOnLeft ? `? + ${round.shown} = ${round.target}` : `${round.shown} + ? = ${round.target}`}
+        </h2>
+      </section>
 
       {feedback ? <FeedbackToast kind={feedback.kind} message={feedback.message} /> : null}
 
-      <div className="number-grid">
-        {round.cards.map((card) => (
-          <NumberCard
-            key={card.id}
-            value={card.value}
-            cardId={card.id}
-            selected={selectedIds.includes(card.id)}
-            onSelect={addCard}
-          />
+      <div className="answer-grid big">
+        {round.options.map((option) => (
+          <button key={option} type="button" className="answer-button big" onClick={() => handleAnswer(option)}>
+            {option}
+          </button>
         ))}
       </div>
 

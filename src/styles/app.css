@@ -79,6 +79,16 @@ body {
   background: #f4faff;
 }
 
+.profile-chip-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.profile-chip-link:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .main-nav {
   display: flex;
   gap: 0.5rem;
@@ -129,6 +139,7 @@ body {
   border: 2px solid var(--outline);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .hero-card,
@@ -142,6 +153,11 @@ body {
 .task-card h2 {
   margin-top: 0;
   margin-bottom: 0.5rem;
+}
+
+.task-card.is-correct {
+  background: #daf8e5;
+  border-color: #8fddb1;
 }
 
 h1,

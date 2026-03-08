@@ -11,7 +11,6 @@ export const AppLayout = () => {
   const navItems = [
     { to: '/', label: t('navStart') },
     { to: '/progress', label: t('navProgress') },
-    { to: '/settings', label: t('navSettings') },
   ]
 
   useEffect(() => {
@@ -24,10 +23,10 @@ export const AppLayout = () => {
         <Link to="/" className="brand">
           Zahlenliebe
         </Link>
-        <p className="profile-chip">
+        <Link to="/settings" className="profile-chip profile-chip-link" aria-label={t('navSettings')}>
           <img src={avatar.image} alt="" className="profile-avatar" />
           {activeProfile.name}
-        </p>
+        </Link>
       </header>
 
       <nav className="main-nav" aria-label="Hauptnavigation">
