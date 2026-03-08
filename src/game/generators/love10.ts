@@ -21,31 +21,17 @@ const shuffle = <T,>(arr: T[]): T[] => {
   return next
 }
 
-const getOptionCount = (level: AdaptiveLevel): number => {
-  if (level === 'easy') {
-    return 4
-  }
-  if (level === 'hard') {
-    return 6
-  }
-  return 5
-}
-
 export const generateLove10Round = (level: AdaptiveLevel, numberRange: NumberRange): Love10Round => {
+  void level
   void numberRange
   const target = 10
   const shown = randomInt(0, target)
   const answer = target - shown
-  const options = new Set<number>([answer])
-  const optionCount = getOptionCount(level)
-
-  while (options.size < optionCount) {
-    options.add(randomInt(0, target))
-  }
+  const options = Array.from({ length: target + 1 }).map((_, value) => value)
 
   return {
     shown,
-    options: shuffle(Array.from(options)),
+    options: shuffle(options),
     target,
     answer,
     missingOnLeft: Math.random() < 0.5,

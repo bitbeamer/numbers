@@ -17,11 +17,15 @@ const mediumPlan: AdaptivePlan = {
 describe('game generators support number ranges', () => {
   it('creates love tasks that always target 10 and ignore number range', () => {
     const rounds = Array.from({ length: 30 }).map(() => generateLove10Round('easy', 25))
+    const allOptions = new Set(Array.from({ length: 11 }).map((_, value) => value))
 
     expect(rounds.every((round) => round.target === 10)).toBe(true)
     expect(rounds.every((round) => round.shown >= 0 && round.shown <= 10)).toBe(true)
     expect(rounds.every((round) => round.answer + round.shown === 10)).toBe(true)
     expect(rounds.every((round) => round.options.includes(round.answer))).toBe(true)
+    expect(rounds.every((round) => round.options.length === 11)).toBe(true)
+    expect(rounds.every((round) => new Set(round.options).size === 11)).toBe(true)
+    expect(rounds.every((round) => round.options.every((option) => allOptions.has(option)))).toBe(true)
     expect(rounds.every((round) => round.options.every((option) => option >= 0 && option <= 10))).toBe(true)
   })
 
