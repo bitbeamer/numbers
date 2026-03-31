@@ -4,13 +4,14 @@ export const STATE_KEY = 'zahlenliebe:v1'
 const BACKUP_KEY = 'zahlenliebe:v1:backup'
 const MAX_RECENT_TASKS = 200
 
-const MODES = ['love10', 'carry', 'sprint', 'placevalue'] as const
+const MODES = ['love10', 'carry', 'sprint', 'placevalue', 'zerlegen'] as const
 
 const createDefaultModeStats = () => ({
   love10: { played: 0, correct: 0, avgMs: 0 },
   carry: { played: 0, correct: 0, avgMs: 0 },
   sprint: { played: 0, correct: 0, avgMs: 0 },
   placevalue: { played: 0, correct: 0, avgMs: 0 },
+  zerlegen: { played: 0, correct: 0, avgMs: 0 },
 })
 
 export const createDefaultProfile = (name = 'Kaya'): Profile => ({
@@ -37,6 +38,7 @@ export const createDefaultProfile = (name = 'Kaya'): Profile => ({
     sum_not_10: 0,
     carry_missed: 0,
     place_value_confusion: 0,
+    decomposition_missed: 0,
   },
   daily: {},
   unlocks: {
@@ -161,7 +163,11 @@ const normalizeProfile = (raw: unknown): Profile | null => {
     .filter(isObject)
     .map((entry): RecentTask => {
       const mode =
-        entry.mode === 'love10' || entry.mode === 'carry' || entry.mode === 'sprint' || entry.mode === 'placevalue'
+        entry.mode === 'love10' ||
+        entry.mode === 'carry' ||
+        entry.mode === 'sprint' ||
+        entry.mode === 'placevalue' ||
+        entry.mode === 'zerlegen'
           ? entry.mode
           : 'love10'
       return {

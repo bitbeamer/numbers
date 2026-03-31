@@ -24,6 +24,7 @@ describe('persistence utilities', () => {
     expect(state.profiles.kid_default.settings.numberRange).toBe(25)
     expect(state.profiles.kid_default.settings.language).toBe('de')
     expect(state.profiles.kid_default.modeStats.placevalue.played).toBe(0)
+    expect(state.profiles.kid_default.modeStats.zerlegen.played).toBe(0)
   })
 
   it('uses backup when primary state cannot be parsed', () => {
@@ -124,6 +125,22 @@ describe('persistence utilities', () => {
     const profile = next.profiles[next.activeProfileId]
     expect(profile.modeStats.placevalue.played).toBe(1)
     expect(profile.modeStats.placevalue.correct).toBe(1)
+  })
+
+  it('records task result for zerlegen mode', () => {
+    saveState(createDefaultState())
+
+    const next = recordTaskResult({
+      mode: 'zerlegen',
+      correct: false,
+      durationMs: 1600,
+      errorType: 'decomposition_missed',
+    })
+
+    const profile = next.profiles[next.activeProfileId]
+    expect(profile.modeStats.zerlegen.played).toBe(1)
+    expect(profile.modeStats.zerlegen.correct).toBe(0)
+    expect(profile.errorPatterns.decomposition_missed).toBe(1)
   })
 
   it('falls back to default state when storage access throws', () => {

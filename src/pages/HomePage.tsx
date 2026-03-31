@@ -45,6 +45,12 @@ export const HomePage = () => {
       text: t('homeModeSprintText'),
       colorClass: 'mode-card--sprint',
     },
+    {
+      to: '/mode/zerlegen',
+      title: t('homeModeZerlegenTitle'),
+      text: t('homeModeZerlegenText'),
+      colorClass: 'mode-card--zerlegen',
+    },
   ]
 
   return (
@@ -81,6 +87,9 @@ export const HomePage = () => {
             </p>
             <p>
               {t('homeProgressSprint')}: {formatPercent(getModeAccuracy(activeProfile, 'sprint'))}
+            </p>
+            <p>
+              {t('homeProgressZerlegen')}: {formatPercent(getModeAccuracy(activeProfile, 'zerlegen'))}
             </p>
           </div>
         </div>

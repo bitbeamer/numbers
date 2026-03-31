@@ -3,6 +3,7 @@ import { generateCarryTask } from './carry'
 import { generateLove10Round } from './love10'
 import { generatePlaceValueTask } from './placevalue'
 import { generateSprintTask } from './sprint'
+import { generateZerlegenTask } from './zerlegen'
 import type { AdaptivePlan } from '../../state/types'
 
 const mediumPlan: AdaptivePlan = {
@@ -60,5 +61,15 @@ describe('game generators support number ranges', () => {
     expect(task.value).toBe(25)
     expect(task.tens).toBe(2)
     expect(task.ones).toBe(5)
+  })
+
+  it('creates zerlegen tasks with exactly one matching tuple among five options', () => {
+    const samples = Array.from({ length: 20 }).map(() => generateZerlegenTask('hard', 50))
+
+    expect(samples.every((task) => task.target >= 2 && task.target <= 50)).toBe(true)
+    expect(samples.every((task) => task.options.length === 5)).toBe(true)
+    expect(samples.every((task) => new Set(task.options.map((option) => `${option.a}+${option.b}`)).size === 5)).toBe(true)
+    expect(samples.every((task) => task.options.filter((option) => option.a + option.b === task.target).length === 1)).toBe(true)
+    expect(samples.every((task) => task.options.every((option) => option.a >= 0 && option.b >= 0))).toBe(true)
   })
 })

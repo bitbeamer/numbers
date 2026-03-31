@@ -33,4 +33,9 @@ describe('router', () => {
     renderAt('/mode/placevalue')
     expect(screen.getByRole('heading', { level: 1, name: /zehner & einer/i })).toBeInTheDocument()
   })
+
+  it('renders zerlegen mode page', () => {
+    renderAt('/mode/zerlegen')
+    expect(screen.getByRole('heading', { level: 1, name: /zerlegen/i })).toBeInTheDocument()
+  })
 })

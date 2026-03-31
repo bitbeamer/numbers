@@ -6,6 +6,7 @@ describe('translations', () => {
     expect(translate('en', 'settingsTitle')).toBe('Settings')
     expect(translate('en', 'progressTitle')).toBe('Progress')
     expect(translate('en', 'carryNeedBundle')).toBe('Look at the ones: bundle 10 ones into 1 ten first.')
+    expect(translate('en', 'zerlegenTitle')).toBe('Decompose')
   })
 
   it('applies interpolation placeholders', () => {

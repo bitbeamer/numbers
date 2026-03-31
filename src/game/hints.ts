@@ -19,5 +19,8 @@ export const labelForError = (errorKey: string, language: Language): string => {
   if (errorKey === 'place_value_confusion') {
     return translate(language, 'errorPlaceValue')
   }
+  if (errorKey === 'decomposition_missed') {
+    return translate(language, 'errorDecompositionMissed')
+  }
   return translate(language, 'errorUnknown')
 }

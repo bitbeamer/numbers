@@ -1,4 +1,4 @@
-export type Mode = 'love10' | 'carry' | 'sprint' | 'placevalue'
+export type Mode = 'love10' | 'carry' | 'sprint' | 'placevalue' | 'zerlegen'
 
 export type DifficultySetting = 'easy' | 'medium' | 'adaptive'
 export type AdaptiveLevel = 'easy' | 'medium' | 'hard'

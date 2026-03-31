@@ -7,6 +7,7 @@ import { PlaceValuePage } from '../pages/PlaceValuePage'
 import { ProgressPage } from '../pages/ProgressPage'
 import { SettingsPage } from '../pages/SettingsPage'
 import { SprintPage } from '../pages/SprintPage'
+import { ZerlegenPage } from '../pages/ZerlegenPage'
 
 export const AppRouter = () => {
   return (
@@ -17,6 +18,7 @@ export const AppRouter = () => {
         <Route path="mode/placevalue" element={<PlaceValuePage />} />
         <Route path="mode/carry" element={<CarryPage />} />
         <Route path="mode/sprint" element={<SprintPage />} />
+        <Route path="mode/zerlegen" element={<ZerlegenPage />} />
         <Route path="progress" element={<ProgressPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>

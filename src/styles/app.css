@@ -216,6 +216,11 @@ p {
   border-color: #bfe0bc;
 }
 
+.mode-card--zerlegen {
+  background: #f3ebff;
+  border-color: #d7c1f6;
+}
+
 .mode-card:hover {
   transform: translateY(-2px);
 }
@@ -445,6 +450,17 @@ p {
 .answer-button.big {
   min-height: 110px;
   font-size: clamp(2rem, 5vw, 2.8rem);
+}
+
+.tuple-answer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.tuple-answer__plus {
+  opacity: 0.65;
 }
 
 .placevalue-number {

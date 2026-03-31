@@ -53,6 +53,10 @@ export const ProgressPage = () => {
             <h3>{t('modeSprint')}</h3>
             <p>{formatPercent(getModeAccuracy(activeProfile, 'sprint'))}</p>
           </div>
+          <div className="mini-card">
+            <h3>{t('modeZerlegen')}</h3>
+            <p>{formatPercent(getModeAccuracy(activeProfile, 'zerlegen'))}</p>
+          </div>
         </div>
       </section>
 
