@@ -63,12 +63,12 @@ describe('game generators support number ranges', () => {
     expect(task.ones).toBe(5)
   })
 
-  it('creates zerlegen tasks with exactly one matching tuple among five options', () => {
+  it('creates zerlegen tasks with exactly one matching tuple among three options', () => {
     const samples = Array.from({ length: 20 }).map(() => generateZerlegenTask('hard', 50))
 
     expect(samples.every((task) => task.target >= 2 && task.target <= 50)).toBe(true)
-    expect(samples.every((task) => task.options.length === 5)).toBe(true)
-    expect(samples.every((task) => new Set(task.options.map((option) => `${option.a}+${option.b}`)).size === 5)).toBe(true)
+    expect(samples.every((task) => task.options.length === 3)).toBe(true)
+    expect(samples.every((task) => new Set(task.options.map((option) => `${option.a}+${option.b}`)).size === 3)).toBe(true)
     expect(samples.every((task) => task.options.filter((option) => option.a + option.b === task.target).length === 1)).toBe(true)
     expect(samples.every((task) => task.options.every((option) => option.a >= 0 && option.b >= 0))).toBe(true)
   })

@@ -37,8 +37,6 @@ describe('ZerlegenPage', () => {
         { a: 0, b: numberRange },
         { a: 1, b: Math.max(0, numberRange - 2) },
         { a: 2, b: Math.max(0, numberRange - 4) },
-        { a: 3, b: Math.max(0, numberRange - 6) },
-        { a: 4, b: Math.max(0, numberRange - 8) },
       ],
     }))
 

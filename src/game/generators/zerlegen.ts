@@ -67,7 +67,7 @@ export const generateZerlegenTask = (level: AdaptiveLevel, numberRange: NumberRa
   const used = new Set([keyFor(correct)])
   const options: ZerlegenOption[] = [correct]
 
-  while (options.length < 5) {
+  while (options.length < 3) {
     const sumOffset = randomInt(-4, 4)
     const distractorSum = Math.min(numberRange, Math.max(0, target + (sumOffset === 0 ? 1 : sumOffset)))
     if (distractorSum === target) {
