@@ -30,6 +30,18 @@ export const ZerlegenPage = () => {
     }
   }, [registerSession])
 
+  useEffect(() => {
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+
+    setTask(generateZerlegenTask(adaptivePlan.level, activeProfile.settings.numberRange))
+    setFeedback(null)
+    roundStartedAtRef.current = nowMs()
+    lockedRef.current = false
+  }, [activeProfile.settings.numberRange, adaptivePlan.level])
+
   const startNewRound = () => {
     setTask(generateZerlegenTask(adaptivePlan.level, activeProfile.settings.numberRange))
     setFeedback(null)
